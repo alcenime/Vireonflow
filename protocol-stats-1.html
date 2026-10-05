@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png">
+<title>Vireon — Protocol Stats</title>
+<meta name="description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta property="og:site_name" content="Vireon">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta property="og:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta name="twitter:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<style>
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(1100px 600px at 18% 0%, var(--gradient-1) 0%, var(--gradient-1-end) 60%),
+    radial-gradient(900px 500px at 85% 10%, var(--gradient-2) 0%, var(--gradient-2-end) 55%),
+    var(--bg-base);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+input { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 2px; }
+
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+:root {
+  --bg-base: #0A0714;
+  --bg-elevated: #080B0C;
+  --bg-panel: #0C1112;
+  --bg-card: #0E1414;
+
+  --accent-lime: #C8FF00;
+  --accent-lime-soft: #D7FF45;
+  --accent-lime-dim: rgba(200, 255, 0, 0.12);
+  --accent-lime-border: rgba(200, 255, 0, 0.28);
+
+  --text-primary: #F4F6F2;
+  --text-secondary: #A9B0AC;
+  --text-muted: #6B726D;
+
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-card: rgba(200, 255, 0, 0.10);
+
+  --navbar-bg: rgba(10, 7, 20, 0.85);
+  --brand-gradient-end: #7FBF00;
+  --shadow-color: rgba(0, 0, 0, 0.55);
+  --gradient-1: rgba(132, 204, 22, 0.28);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.14);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+
+  --max-width: 1460px;
+  --pad-desktop: 40px;
+}
+
+:root[data-theme="light"] {
+  --bg-base: #FAF9FD;
+  --bg-elevated: #FFFFFF;
+  --bg-panel: #FFFFFF;
+  --bg-card: #F3F6EE;
+
+  --accent-lime: #6FA800;
+  --accent-lime-soft: #8FCB00;
+  --accent-lime-dim: rgba(111, 168, 0, 0.10);
+  --accent-lime-border: rgba(111, 168, 0, 0.28);
+
+  --text-primary: #12160F;
+  --text-secondary: #5B6355;
+  --text-muted: #8B9285;
+
+  --border-subtle: rgba(18, 22, 15, 0.08);
+  --border-card: rgba(111, 168, 0, 0.16);
+
+  --navbar-bg: rgba(250, 249, 253, 0.85);
+  --brand-gradient-end: #C8FF00;
+  --shadow-color: rgba(80, 100, 40, 0.14);
+  --gradient-1: rgba(132, 204, 22, 0.10);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.08);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+}
+
+html { transition: background-color 0.2s ease; }
+body, .navbar { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: var(--pad-desktop);
+  padding-right: var(--pad-desktop);
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.navbar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--pad-desktop);
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 18px; height: 18px; }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.btn-open-app {
+  padding: 10px 20px;
+  background: var(--accent-lime);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-open-app:hover { background: var(--accent-lime-soft); transform: translateY(-1px); }
+.btn-open-app:active { transform: translateY(0); }
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle-btn:hover { border-color: var(--accent-lime-border); color: var(--text-primary); }
+.theme-toggle-btn svg { width: 17px; height: 17px; }
+.theme-toggle-btn .icon-sun { display: none; }
+.theme-toggle-btn .icon-moon { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-sun { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-moon { display: none; }
+
+/* ============================================================
+   MAIN / PAGE HEADER
+   ============================================================ */
+main {
+  padding-top: 76px;
+}
+.explore-header {
+  padding: 56px 0 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.explore-heading h1 {
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.explore-heading p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 460px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   FEATURED CONTENT LAYOUT
+   ============================================================ */
+.featured-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding-bottom: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.section-eyebrow {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-lime-soft);
+  margin-bottom: 10px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+.section-title.no-gap { margin-bottom: 4px; }
+
+/* ---- Protocol stats grid ---- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.stat-tile {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+.stat-tile-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.stat-tile-value {
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* ---- Highlight figure (fee claim / burn total / epoch) ---- */
+.highlight-figure { margin-bottom: 8px; }
+.highlight-value {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+.highlight-value .unit {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-left: 8px;
+  letter-spacing: 0;
+}
+.highlight-label {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ---- Tokenomics ---- */
+.tokenomics-block { margin-top: 28px; }
+.tokenomics-title {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.tokenomics-bar {
+  display: flex;
+  width: 100%;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  gap: 2px;
+  margin-bottom: 18px;
+}
+.tokenomics-bar span { height: 100%; }
+.tokenomics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.tokenomics-item { min-width: 0; }
+.tokenomics-pct {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.tokenomics-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tokenomics-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.tokenomics-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.dot-pool { background: var(--accent-lime); }
+.dot-feeback { background: var(--accent-lime-soft); }
+.dot-treasury { background: var(--text-secondary); }
+.dot-team { background: var(--text-muted); }
+
+/* ---- Burn / data table ---- */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 24px;
+  -webkit-overflow-scrolling: touch;
+}
+.data-table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+}
+.data-table th {
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 12px 14px;
+  white-space: nowrap;
+}
+.data-table th:last-child, .data-table td:last-child { text-align: right; }
+.data-table td {
+  font-size: 14px;
+  color: var(--text-primary);
+  padding: 11px 12px;
+  white-space: nowrap;
+}
+.data-table .row-no { color: var(--text-muted); font-weight: 500; }
+.tx-link {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+  color: var(--accent-lime-soft);
+  transition: color 0.2s ease;
+}
+.tx-link:hover { color: var(--accent-lime); text-decoration: underline; }
+.table-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 14px;
+}
+
+/* ---- Protocol addresses ---- */
+.addresses-panel { padding: 24px 32px; }
+.addresses-panel .section-title { font-size: 15px; margin-bottom: 18px; }
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.address-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+.address-title { font-size: 12.5px; font-weight: 650; color: var(--text-primary); margin-bottom: 10px; }
+.address-tag { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+.address-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.address-value {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.copy-btn {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.copy-btn:hover { border-color: var(--accent-lime-border); color: var(--text-primary); }
+.copy-btn svg { width: 13px; height: 13px; }
+.copy-btn.copied { color: var(--accent-lime); border-color: var(--accent-lime-border); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer.site-footer {
+  margin-top: 48px;
+  padding: 0 var(--pad-desktop) 40px;
+}
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.footer-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: minmax(200px, 1.3fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(220px, 1.5fr);
+  gap: 32px;
+  box-shadow: 0 12px 32px var(--shadow-color);
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.footer-brand .brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.footer-brand .brand-mark svg { width: 14px; height: 14px; }
+.footer-brand span { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+.footer-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 320px;
+}
+.footer-col { min-width: 0; }
+.footer-col-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-links a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-links a:hover { color: var(--text-primary); }
+.footer-risk-text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 20px;
+}
+.footer-copyright { font-size: 12.5px; color: var(--text-muted); }
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-social a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-social a:hover { color: var(--text-primary); }
+.footer-x {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.footer-x svg { width: 13px; height: 13px; }
+.footer-social a.footer-x { color: var(--text-primary); text-decoration: none; }
+
+@media (max-width: 800px) {
+  .footer-card { grid-template-columns: 1fr 1fr; }
+  .footer-card .footer-brand-col { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  footer.site-footer { padding: 0 20px 32px; }
+  .footer-card { grid-template-columns: 1fr; padding: 28px; gap: 26px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 860px) {
+  :root { --pad-desktop: 20px; }
+
+  .navbar-inner { height: 64px; }
+
+  .explore-header { padding-top: 36px; }
+  .explore-heading h1 { font-size: 28px; }
+
+  .panel { padding: 22px; }
+  .addresses-panel { padding: 20px 22px; }
+
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .tokenomics-grid { grid-template-columns: repeat(2, 1fr); }
+  .addresses-grid { grid-template-columns: 1fr; }
+
+  .highlight-value { font-size: 28px; }
+}
+
+@media (max-width: 480px) {
+  .brand-name { font-size: 16px; }
+  :root { --pad-desktop: 14px; }
+
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-tile { padding: 14px; }
+  .stat-tile-value { font-size: 18px; }
+
+  /* Burn History stays a real table — it just scrolls horizontally
+     inside .table-wrapper on narrow screens, no stacked rows. */
+  .data-table th, .data-table td { padding: 12px 10px; font-size: 13px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<header class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+      <span class="brand-name">Vireon</span>
+    </a>
+
+    <div class="nav-right">
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle light/dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <a href="featured.html" class="btn-open-app">← Back</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main>
+  <div class="shell">
+
+    <!-- Page header -->
+    <section class="explore-header">
+      <div class="explore-heading">
+        <h1>Protocol Stats</h1>
+        <p>Protocol activity, token burns, treasury and fee statistics.</p>
+      </div>
+    </section>
+
+    <div class="featured-content">
+
+      <!-- 01 — Overview -->
+      <div class="panel">
+        <div class="section-eyebrow">01 — Overview</div>
+        <div class="section-title no-gap">Overview</div>
+        <div class="stats-grid" style="margin-top: 24px;">
+          <div class="stat-tile">
+            <div class="stat-tile-label">Total Fee Claimed</div>
+            <div class="stat-tile-value" id="statFeeClaimed">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Total Token Burned</div>
+            <div class="stat-tile-value" id="statTokenBurned">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Treasury</div>
+            <div class="stat-tile-value" id="statTreasury">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Total Staked</div>
+            <div class="stat-tile-value" id="statTotalStaked">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 — Tokenomics -->
+      <div class="panel">
+        <div class="section-eyebrow">02 — Tokenomics</div>
+        <div class="section-title no-gap">Tokenomics</div>
+
+        <div class="tokenomics-block" style="margin-top: 24px;">
+          <div class="tokenomics-title">Fee Distribution</div>
+          <div class="tokenomics-bar" aria-hidden="true">
+            <span class="dot-pool" style="width: 30%;"></span>
+            <span class="dot-feeback" style="width: 20%;"></span>
+            <span class="dot-treasury" style="width: 20%;"></span>
+            <span class="dot-team" style="width: 30%;"></span>
+          </div>
+          <div class="tokenomics-grid">
+            <div class="tokenomics-item">
+              <div class="tokenomics-pct"><span class="tokenomics-dot dot-pool"></span>30%</div>
+              <div class="tokenomics-label">Pool / Epoch</div>
+              <div class="tokenomics-hint">Used for epoch pool rewards.</div>
+            </div>
+            <div class="tokenomics-item">
+              <div class="tokenomics-pct"><span class="tokenomics-dot dot-feeback"></span>20%</div>
+              <div class="tokenomics-label">Fee Back</div>
+              <div class="tokenomics-hint">Used for the protocol fee-back mechanism.</div>
+            </div>
+            <div class="tokenomics-item">
+              <div class="tokenomics-pct"><span class="tokenomics-dot dot-treasury"></span>20%</div>
+              <div class="tokenomics-label">Treasury</div>
+              <div class="tokenomics-hint">Used to support token operations, including token acquisition and burns.</div>
+            </div>
+            <div class="tokenomics-item">
+              <div class="tokenomics-pct"><span class="tokenomics-dot dot-team"></span>30%</div>
+              <div class="tokenomics-label">Team</div>
+              <div class="tokenomics-hint">Protocol team allocation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 — Burn -->
+      <div class="panel">
+        <div class="section-eyebrow">03 — Burn</div>
+        <div class="section-title">Burn History</div>
+
+        <div class="table-wrapper">
+          <table class="data-table" id="burnTable">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Total Burn</th>
+                <th>Date</th>
+                <th>TX</th>
+              </tr>
+            </thead>
+            <tbody id="burnTableBody">
+              <!-- No burn records yet — real on-chain burn data will be
+                   rendered here once connected, e.g. by mapping an array
+                   of { amount, date, txHash } into rows of this structure. -->
+              <tr>
+                <td class="row-no">01</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td class="row-no">02</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td class="row-no">03</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td class="row-no">04</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td class="row-no">05</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 04 — Protocol Addresses -->
+      <div class="panel addresses-panel">
+        <div class="section-eyebrow">04 — Protocol Addresses</div>
+        <div class="section-title">Protocol Addresses</div>
+        <div class="addresses-grid">
+          <div class="address-card">
+            <div class="address-title">Treasury</div>
+            <div class="address-tag">Adrs:</div>
+            <div class="address-row">
+              <span class="address-value" id="addrTreasury">—</span>
+              <button type="button" class="copy-btn" data-copy-target="addrTreasury" aria-label="Copy Treasury address">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="address-card">
+            <div class="address-title">Pool Rewards</div>
+            <div class="address-tag">Adrs:</div>
+            <div class="address-row">
+              <span class="address-value" id="addrPoolRewards">—</span>
+              <button type="button" class="copy-btn" data-copy-target="addrPoolRewards" aria-label="Copy Pool Rewards address">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="address-card">
+            <div class="address-title">Token Contract</div>
+            <div class="address-tag">Adrs:</div>
+            <div class="address-row">
+              <span class="address-value" id="addrTokenContract">—</span>
+              <button type="button" class="copy-btn" data-copy-target="addrTokenContract" aria-label="Copy Token Contract address">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-card">
+      <div class="footer-brand-col">
+        <div class="footer-brand">
+          <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+          <span>Vireon</span>
+        </div>
+        <p class="footer-desc">Explore tokens launched through Vireon on Robinhood Chain. Your wallet submits every transaction. Vireon does not custody assets.</p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="index.html">Explore</a>
+          <a href="launch.html">Launch</a>
+          <a href="featured.html">Featured</a>
+          <a href="#">Profile</a>
+          <a href="docs.html">Docs</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Risk notice</div>
+        <p class="footer-risk-text">Transactions are submitted through your wallet and may be irreversible. Tokens can be volatile or lose all value. Vireon does not provide custody, guarantees, or financial advice.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2026 Vireon.</span>
+      <div class="footer-social">
+        <a href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer">@Vireonlaunch</a>
+        <a class="footer-x" href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer" aria-label="Vireon on X">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-6.9l-5.4-7-6.2 7H1.8l8-9.2L1 2h7.1l4.9 6.4L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ----------------------------------------------------------
+  // Theme toggle (light / dark) — same storage key as the rest
+  // of the Vireon site, so the theme stays in sync across pages.
+  // ----------------------------------------------------------
+  (function () {
+    const root = document.documentElement;
+    const btnDesktop = document.getElementById('themeToggleBtn');
+    const STORAGE_KEY = 'vireon-theme';
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+    }
+
+    let stored = null;
+    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const initial = stored || (prefersLight ? 'light' : 'dark');
+    applyTheme(initial);
+
+    function toggleTheme() {
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const next = isLight ? 'dark' : 'light';
+      applyTheme(next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+    }
+
+    if (btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+  })();
+
+  // ----------------------------------------------------------
+  // Copy-to-clipboard for protocol addresses.
+  // Values are placeholders ("—") until wired to real addresses —
+  // once real addresses are set on the .address-value spans, this
+  // will copy them as-is, no changes needed here.
+  // ----------------------------------------------------------
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const targetId = btn.getAttribute('data-copy-target');
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      const value = el.textContent.trim();
+      if (!value || value === '—') return;
+
+      try {
+        await navigator.clipboard.writeText(value);
+      } catch (e) {
+        // Clipboard API unavailable — fail silently, still show feedback.
+      }
+
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1200);
+    });
+  });
+
+  // ----------------------------------------------------------
+  // Burn table transaction links.
+  // Placeholder hrefs — point these at Robinhood Chain Blockscout
+  // once real tx hashes are available, e.g.:
+  //   `https://blockscout.robinhoodchain.example/tx/${fullTxHash}`
+  // ----------------------------------------------------------
+  document.querySelectorAll('.tx-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      if (link.getAttribute('href') === '#') e.preventDefault();
+    });
+  });
+</script>
+
+<script type="module" src="wallet.js"></script>
+</body>
+</html>

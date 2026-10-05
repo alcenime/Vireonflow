@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png">
+<title>Vireon — Fee Claim</title>
+<meta name="description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta property="og:site_name" content="Vireon">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta property="og:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta name="twitter:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<style>
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(1100px 600px at 18% 0%, var(--gradient-1) 0%, var(--gradient-1-end) 60%),
+    radial-gradient(900px 500px at 85% 10%, var(--gradient-2) 0%, var(--gradient-2-end) 55%),
+    var(--bg-base);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+input { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 2px; }
+
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+:root {
+  --bg-base: #0A0714;
+  --bg-elevated: #080B0C;
+  --bg-panel: #0C1112;
+  --bg-card: #0E1414;
+
+  --accent-lime: #C8FF00;
+  --accent-lime-soft: #D7FF45;
+  --accent-lime-dim: rgba(200, 255, 0, 0.12);
+  --accent-lime-border: rgba(200, 255, 0, 0.28);
+
+  --text-primary: #F4F6F2;
+  --text-secondary: #A9B0AC;
+  --text-muted: #6B726D;
+
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-card: rgba(200, 255, 0, 0.10);
+
+  --navbar-bg: rgba(10, 7, 20, 0.85);
+  --brand-gradient-end: #7FBF00;
+  --shadow-color: rgba(0, 0, 0, 0.55);
+  --gradient-1: rgba(132, 204, 22, 0.28);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.14);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+
+  --max-width: 1460px;
+  --pad-desktop: 40px;
+}
+
+:root[data-theme="light"] {
+  --bg-base: #FAF9FD;
+  --bg-elevated: #FFFFFF;
+  --bg-panel: #FFFFFF;
+  --bg-card: #F3F6EE;
+
+  --accent-lime: #6FA800;
+  --accent-lime-soft: #8FCB00;
+  --accent-lime-dim: rgba(111, 168, 0, 0.10);
+  --accent-lime-border: rgba(111, 168, 0, 0.28);
+
+  --text-primary: #12160F;
+  --text-secondary: #5B6355;
+  --text-muted: #8B9285;
+
+  --border-subtle: rgba(18, 22, 15, 0.08);
+  --border-card: rgba(111, 168, 0, 0.16);
+
+  --navbar-bg: rgba(250, 249, 253, 0.85);
+  --brand-gradient-end: #C8FF00;
+  --shadow-color: rgba(80, 100, 40, 0.14);
+  --gradient-1: rgba(132, 204, 22, 0.10);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.08);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+}
+
+html { transition: background-color 0.2s ease; }
+body, .navbar { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: var(--pad-desktop);
+  padding-right: var(--pad-desktop);
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.navbar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--pad-desktop);
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 18px; height: 18px; }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-link {
+  position: relative;
+  padding: 9px 18px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.nav-link.active {
+  color: var(--bg-base);
+  background: var(--accent-lime);
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-connect {
+  padding: 10px 20px;
+  background: var(--accent-lime);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-connect:hover { background: var(--accent-lime-soft); transform: translateY(-1px); }
+.btn-connect:active { transform: translateY(0); }
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle-btn:hover { border-color: var(--accent-lime-border); color: var(--text-primary); }
+.theme-toggle-btn svg { width: 17px; height: 17px; }
+.theme-toggle-btn .icon-sun { display: none; }
+.theme-toggle-btn .icon-moon { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-sun { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-moon { display: none; }
+
+.hamburger {
+  display: none;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.hamburger svg { width: 18px; height: 18px; color: var(--text-primary); }
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px var(--pad-desktop) 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .nav-link { width: 100%; text-align: left; }
+
+/* ============================================================
+   MAIN / PAGE HEADER
+   ============================================================ */
+main {
+  padding-top: 76px;
+}
+.explore-header {
+  padding: 56px 0 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.explore-heading h1 {
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.explore-heading p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   FEE CLAIM — layout
+   ============================================================ */
+.claim-shell { max-width: 1080px; margin: 0 auto; }
+.claim-content { padding-bottom: 64px; }
+.claim-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.claim-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+/* ============================================================
+   FEE CLAIM — panels
+   ============================================================ */
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  min-width: 0;
+}
+.panel-eyebrow {
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent-lime-soft);
+  margin-bottom: 12px;
+}
+.panel-title {
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.panel-desc { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+.panel-note { margin-top: 14px; font-size: 12.5px; line-height: 1.55; color: var(--text-muted); }
+
+.claim-highlight {
+  margin-top: 24px;
+  font-size: 34px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.claim-highlight-label { margin-top: 4px; font-size: 13px; color: var(--text-secondary); }
+
+.stat-list { margin-top: 22px; }
+.stat-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.stat-label { font-size: 14px; color: var(--text-secondary); }
+.stat-sub { display: block; margin-top: 2px; font-size: 12px; color: var(--text-muted); }
+.stat-value {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ---- Eligibility status badge (dynamic states) ---- */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.status-badge[data-state="eligible"] {
+  background: var(--accent-lime-dim);
+  border-color: var(--accent-lime-border);
+  color: var(--text-primary);
+}
+.status-badge[data-state="not-eligible"],
+.status-badge[data-state="already-claimed"],
+.status-badge[data-state="limit-reached"],
+.status-badge[data-state="pool-empty"] {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+.status-badge[data-state="unknown"] { border-color: transparent; padding: 0; font-size: 15px; color: var(--text-primary); }
+
+/* ---- Wallet state + buttons ---- */
+.wallet-state {
+  margin-top: 22px;
+  padding: 16px 18px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.btn-primary-lg {
+  margin-top: 16px;
+  width: 100%;
+  min-height: 52px;
+  padding: 15px 0;
+  background: var(--accent-lime);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14.5px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-primary-lg:hover { background: var(--accent-lime-soft); transform: translateY(-1px); }
+.btn-primary-lg:active { transform: translateY(0); }
+.btn-primary-lg:disabled,
+.btn-primary-lg:disabled:hover {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--accent-lime);
+  transform: none;
+}
+.btn-primary-lg[hidden] { display: none; }
+
+/* ---- How it works ---- */
+.how-panel { margin-top: 20px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 24px; }
+.step { padding: 0 28px; border-left: 1px solid var(--border-subtle); }
+.step:first-child { padding-left: 0; border-left: none; }
+.step:last-child { padding-right: 0; }
+.step-num { font-size: 12px; font-weight: 650; letter-spacing: 0.07em; color: var(--accent-lime-soft); margin-bottom: 10px; }
+.step-title { font-size: 17px; font-weight: 650; letter-spacing: -0.01em; color: var(--text-primary); margin-bottom: 8px; }
+.step-text { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer.site-footer {
+  margin-top: 48px;
+  padding: 0 var(--pad-desktop) 40px;
+}
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.footer-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: minmax(200px, 1.3fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(220px, 1.5fr);
+  gap: 32px;
+  box-shadow: 0 12px 32px var(--shadow-color);
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.footer-brand .brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.footer-brand .brand-mark svg { width: 14px; height: 14px; }
+.footer-brand span { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+.footer-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 320px;
+}
+.footer-col { min-width: 0; }
+.footer-col-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-links a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-links a:hover { color: var(--text-primary); }
+.footer-risk-text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 20px;
+}
+.footer-copyright { font-size: 12.5px; color: var(--text-muted); }
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-social a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-social a:hover { color: var(--text-primary); }
+.footer-x {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.footer-x svg { width: 13px; height: 13px; }
+.footer-social a.footer-x { color: var(--text-primary); text-decoration: none; }
+
+@media (max-width: 800px) {
+  .footer-card { grid-template-columns: 1fr 1fr; }
+  .footer-card .footer-brand-col { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  footer.site-footer { padding: 0 20px 32px; }
+  .footer-card { grid-template-columns: 1fr; padding: 28px; gap: 26px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 860px) {
+  :root { --pad-desktop: 20px; }
+
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  .navbar-inner { height: 64px; }
+
+  .explore-header { padding-top: 36px; }
+  .explore-heading h1 { font-size: 28px; }
+
+  .claim-layout { grid-template-columns: 1fr; }
+  .panel { padding: 26px; }
+  .steps { grid-template-columns: 1fr; }
+  .step, .step:first-child, .step:last-child {
+    padding: 20px 0;
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .step:first-child { padding-top: 0; border-top: none; }
+  .step:last-child { padding-bottom: 0; }
+}
+
+@media (max-width: 480px) {
+  .brand-name { font-size: 16px; }
+  :root { --pad-desktop: 14px; }
+
+  .panel { padding: 22px; }
+  .panel-title { font-size: 19px; }
+  .claim-highlight { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<header class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+      <span class="brand-name">Vireon</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Explore</a>
+      <a href="launch.html" class="nav-link">Launch</a>
+      <a href="featured.html" class="nav-link active">Featured</a>
+      <a href="stake.html" class="nav-link">Stake</a>
+      <a href="protocol-stats.html" class="nav-link">Protocol Stats</a>
+    </nav>
+
+    <div class="nav-right">
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle light/dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button class="btn-connect">Connect Wallet</button>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="nav-link">Explore</a>
+    <a href="launch.html" class="nav-link">Launch</a>
+    <a href="featured.html" class="nav-link active">Featured</a>
+    <a href="stake.html" class="nav-link">Stake</a>
+    <a href="protocol-stats.html" class="nav-link">Protocol Stats</a>
+    <a href="docs.html" class="nav-link">Docs</a>
+    <button class="theme-toggle-btn" id="themeToggleBtnMobile" aria-label="Toggle light/dark mode" style="margin-top: 6px;">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main>
+  <div class="shell">
+    <div class="claim-shell">
+
+      <section class="explore-header">
+        <div class="explore-heading">
+          <h1>Fee Claim</h1>
+          <p>Claim daily rewards from Vireon's launch fee pool.</p>
+        </div>
+      </section>
+
+      <div class="claim-content">
+        <div class="claim-layout">
+
+          <!-- Primary card -->
+          <section class="panel claim-panel" aria-labelledby="claimTitle">
+            <div class="panel-eyebrow">Rewards</div>
+            <h2 class="panel-title" id="claimTitle">Daily Fee Claim</h2>
+            <p class="panel-desc">Claim from the Vireon launch fee pool on a first-come, first-served basis.</p>
+
+            <div class="claim-highlight" id="claimAmount">0.0005 ETH</div>
+            <div class="claim-highlight-label">Per Claim</div>
+
+            <div class="stat-list">
+              <div class="stat-row">
+                <span class="stat-label">Daily Allocation<span class="stat-sub">Maximum daily claims</span></span>
+                <span class="stat-value" id="dailyAllocation">100 FCFS</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Claims Remaining</span>
+                <span class="stat-value" id="claimsRemaining">—</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Fee Pool</span>
+                <span class="stat-value" id="feePool">—</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Next Reset</span>
+                <span class="stat-value" id="nextReset">—</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Eligibility</span>
+                <span class="stat-value"><span class="status-badge" id="eligibilityStatus" data-state="unknown">—</span></span>
+              </div>
+            </div>
+
+            <div class="wallet-state" id="walletMessage" role="status" aria-live="polite">Connect your wallet to check eligibility.</div>
+
+            <button type="button" class="btn-primary-lg" id="btnConnectCard">Connect Wallet</button>
+            <button type="button" class="btn-primary-lg" id="claimButton" disabled aria-disabled="true">Claim 0.0005 ETH</button>
+          </section>
+
+          <!-- Side column -->
+          <div class="claim-side">
+
+            <section class="panel" aria-labelledby="eligibilityTitle">
+              <div class="panel-eyebrow">Requirements</div>
+              <h2 class="panel-title" id="eligibilityTitle">Eligibility</h2>
+              <p class="panel-desc">A wallet must meet Vireon's eligibility requirements to participate in the daily fee claim.</p>
+              <p class="panel-note">Participation does not guarantee a reward.</p>
+            </section>
+
+            <section class="panel" aria-labelledby="rulesTitle">
+              <div class="panel-eyebrow">Protocol</div>
+              <h2 class="panel-title" id="rulesTitle">Protocol Rules</h2>
+              <div class="stat-list" style="margin-top: 12px;">
+                <div class="stat-row">
+                  <span class="stat-label">Claim amount</span>
+                  <span class="stat-value">0.0005 ETH</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Daily maximum</span>
+                  <span class="stat-value">100 FCFS claims</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Launch fee</span>
+                  <span class="stat-value">0.0005 ETH</span>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+        <!-- How it works -->
+        <section class="panel how-panel" aria-labelledby="howTitle">
+          <div class="panel-eyebrow">Overview</div>
+          <h2 class="panel-title" id="howTitle">How Fee Claim Works</h2>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">01</div>
+              <div class="step-title">Launch</div>
+              <p class="step-text">Launch a token on Vireon and pay the required launch fee.</p>
+            </div>
+            <div class="step">
+              <div class="step-num">02</div>
+              <div class="step-title">Fee Pool</div>
+              <p class="step-text">Launch fees contribute to the Vireon fee pool.</p>
+            </div>
+            <div class="step">
+              <div class="step-num">03</div>
+              <div class="step-title">Daily Claim</div>
+              <p class="step-text">Eligible wallets can claim 0.0005 ETH on a first-come, first-served basis.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-card">
+      <div class="footer-brand-col">
+        <div class="footer-brand">
+          <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+          <span>Vireon</span>
+        </div>
+        <p class="footer-desc">Launch and explore tokens on Robinhood Chain. Your wallet submits every transaction. Vireon does not custody assets.</p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="index.html">Explore</a>
+          <a href="launch.html">Launch</a>
+          <a href="featured.html">Featured</a>
+          <a href="stake.html">Stake</a>
+          <a href="protocol-stats.html">Protocol Stats</a>
+          <a href="docs.html">Docs</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="legal.html#privacy">Privacy Policy</a>
+          <a href="legal.html#terms">Terms of Use</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Risk notice</div>
+        <p class="footer-risk-text">Transactions are submitted through your wallet and may be irreversible. Tokens can be volatile or lose all value. Vireon does not provide custody, guarantees, or financial advice.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2026 Vireon.</span>
+      <div class="footer-social">
+        <a href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer">@Vireonlaunch</a>
+        <a class="footer-x" href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer" aria-label="Vireon on X">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-6.9l-5.4-7-6.2 7H1.8l8-9.2L1 2h7.1l4.9 6.4L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ----------------------------------------------------------
+  // Theme toggle (light / dark) — same storage key as the rest
+  // of the Vireon site, so the theme stays in sync across pages.
+  // ----------------------------------------------------------
+  (function () {
+    const root = document.documentElement;
+    const btnDesktop = document.getElementById('themeToggleBtn');
+    const btnMobile = document.getElementById('themeToggleBtnMobile');
+    const STORAGE_KEY = 'vireon-theme';
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+    }
+
+    let stored = null;
+    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const initial = stored || (prefersLight ? 'light' : 'dark');
+    applyTheme(initial);
+
+    function toggleTheme() {
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const next = isLight ? 'dark' : 'light';
+      applyTheme(next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+    }
+
+    if (btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+    if (btnMobile) btnMobile.addEventListener('click', toggleTheme);
+  })();
+
+  // ----------------------------------------------------------
+  // Mobile menu toggle
+  // ----------------------------------------------------------
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+
+  // ----------------------------------------------------------
+  // FEE CLAIM — UI only (no contracts, no claim transaction)
+  //
+  // Static protocol rules are fixed below. Every dynamic value
+  // starts as null and renders as "—" until real data is set
+  // through renderFeeClaim(). Nothing here is fabricated.
+  // ----------------------------------------------------------
+  const PROTOCOL = {
+    claimAmount: '0.0005 ETH',
+    dailyAllocation: '100 FCFS'
+  };
+
+  // Eligibility states the backend will be able to report later.
+  const ELIGIBILITY_STATES = {
+    unknown:           { label: '—',                   message: 'Connect your wallet to check eligibility.' },
+    eligible:          { label: 'Eligible',            message: 'This wallet is eligible to claim.' },
+    'not-eligible':    { label: 'Not Eligible',        message: 'This wallet is not eligible to claim.' },
+    'already-claimed': { label: 'Already Claimed',     message: 'This wallet has already claimed today.' },
+    'limit-reached':   { label: 'Daily Limit Reached', message: 'The daily claim limit has been reached.' },
+    'pool-empty':      { label: 'Fee Pool Empty',      message: 'The fee pool is currently empty.' }
+  };
+
+  const claimData = {
+    claimsRemaining: null,
+    feePool: null,
+    nextReset: null,
+    eligibility: 'unknown',
+    walletConnected: false
+  };
+
+  const el = (id) => document.getElementById(id);
+  const orDash = (v) => (v === null || v === undefined || v === '' ? '—' : String(v));
+
+  function renderFeeClaim() {
+    el('claimAmount').textContent = PROTOCOL.claimAmount;
+    el('dailyAllocation').textContent = PROTOCOL.dailyAllocation;
+    el('claimsRemaining').textContent = orDash(claimData.claimsRemaining);
+    el('feePool').textContent = orDash(claimData.feePool);
+    el('nextReset').textContent = orDash(claimData.nextReset);
+
+    const state = ELIGIBILITY_STATES[claimData.eligibility] || ELIGIBILITY_STATES.unknown;
+    const badge = el('eligibilityStatus');
+    badge.textContent = state.label;
+    badge.setAttribute('data-state', claimData.eligibility in ELIGIBILITY_STATES ? claimData.eligibility : 'unknown');
+
+    // Wallet message + connect button
+    if (!claimData.walletConnected) {
+      el('walletMessage').textContent = 'Connect your wallet to check eligibility.';
+    } else if (claimData.eligibility === 'unknown') {
+      el('walletMessage').textContent = 'Wallet connected. Eligibility is not available yet.';
+    } else {
+      el('walletMessage').textContent = state.message;
+    }
+    el('btnConnectCard').hidden = claimData.walletConnected;
+
+    // The claim button stays disabled until real data says the wallet is eligible.
+    // No claim transaction exists yet, so this page never enables it on its own.
+    el('claimButton').disabled = true;
+  }
+
+  // Connect Wallet (card) — opens the wallet modal if wallet.js is loaded
+  el('btnConnectCard').addEventListener('click', () => {
+    if (window.VireonWallet && typeof window.VireonWallet.connect === 'function') {
+      window.VireonWallet.connect();
+    } else {
+      el('walletMessage').textContent = 'Wallet connection is not available right now.';
+    }
+  });
+
+  // Follow wallet connection state (wallet.js is a deferred module)
+  function bindWallet() {
+    if (!window.VireonWallet || typeof window.VireonWallet.onChange !== 'function') return;
+    window.VireonWallet.onChange((next) => {
+      claimData.walletConnected = !!(next && next.address);
+      if (!claimData.walletConnected) claimData.eligibility = 'unknown';
+      renderFeeClaim();
+    });
+  }
+  if (window.VireonWallet) bindWallet();
+  else document.addEventListener('vireonwallet:ready', bindWallet, { once: true });
+
+  renderFeeClaim();
+</script>
+
+<script type="module" src="wallet.js"></script>
+</body>
+</html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png">
+<title>Vireon — Featured</title>
+<meta name="description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta property="og:site_name" content="Vireon">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta property="og:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta name="twitter:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<style>
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(1100px 600px at 18% 0%, var(--gradient-1) 0%, var(--gradient-1-end) 60%),
+    radial-gradient(900px 500px at 85% 10%, var(--gradient-2) 0%, var(--gradient-2-end) 55%),
+    var(--bg-base);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+input { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 2px; }
+
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+:root {
+  --bg-base: #0A0714;
+  --bg-elevated: #080B0C;
+  --bg-panel: #0C1112;
+  --bg-card: #0E1414;
+
+  --accent-lime: #C8FF00;
+  --accent-lime-soft: #D7FF45;
+  --accent-lime-dim: rgba(200, 255, 0, 0.12);
+  --accent-lime-border: rgba(200, 255, 0, 0.28);
+
+  --text-primary: #F4F6F2;
+  --text-secondary: #A9B0AC;
+  --text-muted: #6B726D;
+
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-card: rgba(200, 255, 0, 0.10);
+
+  --navbar-bg: rgba(10, 7, 20, 0.85);
+  --brand-gradient-end: #7FBF00;
+  --shadow-color: rgba(0, 0, 0, 0.55);
+  --gradient-1: rgba(132, 204, 22, 0.28);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.14);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+
+  --max-width: 1460px;
+  --pad-desktop: 40px;
+}
+
+:root[data-theme="light"] {
+  --bg-base: #FAF9FD;
+  --bg-elevated: #FFFFFF;
+  --bg-panel: #FFFFFF;
+  --bg-card: #F3F6EE;
+
+  --accent-lime: #6FA800;
+  --accent-lime-soft: #8FCB00;
+  --accent-lime-dim: rgba(111, 168, 0, 0.10);
+  --accent-lime-border: rgba(111, 168, 0, 0.28);
+
+  --text-primary: #12160F;
+  --text-secondary: #5B6355;
+  --text-muted: #8B9285;
+
+  --border-subtle: rgba(18, 22, 15, 0.08);
+  --border-card: rgba(111, 168, 0, 0.16);
+
+  --navbar-bg: rgba(250, 249, 253, 0.85);
+  --brand-gradient-end: #C8FF00;
+  --shadow-color: rgba(80, 100, 40, 0.14);
+  --gradient-1: rgba(132, 204, 22, 0.10);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.08);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+}
+
+html { transition: background-color 0.2s ease; }
+body, .navbar { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: var(--pad-desktop);
+  padding-right: var(--pad-desktop);
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.navbar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--pad-desktop);
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 18px; height: 18px; }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-link {
+  position: relative;
+  padding: 9px 18px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.nav-link.active {
+  color: var(--bg-base);
+  background: var(--accent-lime);
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-connect {
+  padding: 10px 20px;
+  background: var(--accent-lime);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-connect:hover { background: var(--accent-lime-soft); transform: translateY(-1px); }
+.btn-connect:active { transform: translateY(0); }
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle-btn:hover { border-color: var(--accent-lime-border); color: var(--text-primary); }
+.theme-toggle-btn svg { width: 17px; height: 17px; }
+.theme-toggle-btn .icon-sun { display: none; }
+.theme-toggle-btn .icon-moon { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-sun { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-moon { display: none; }
+
+.hamburger {
+  display: none;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.hamburger svg { width: 18px; height: 18px; color: var(--text-primary); }
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px var(--pad-desktop) 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .nav-link { width: 100%; text-align: left; }
+
+/* ============================================================
+   MAIN / PAGE HEADER
+   ============================================================ */
+main {
+  padding-top: 76px;
+}
+.explore-header {
+  padding: 56px 0 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.explore-heading h1 {
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.explore-heading p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 460px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   FEATURED MENU — feature selection cards
+   ============================================================ */
+.featured-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-bottom: 64px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.feature-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  min-height: 220px;
+  transition: border-color 0.22s ease, transform 0.22s ease, background 0.22s ease;
+}
+.feature-card:hover,
+.feature-card:focus-visible {
+  border-color: var(--accent-lime-border);
+  transform: translateY(-4px);
+}
+
+.feature-eyebrow {
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent-lime-soft);
+  margin-bottom: 12px;
+}
+.feature-title {
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.feature-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  flex-grow: 1;
+}
+
+.feature-highlight {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.feature-open {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--accent-lime-soft);
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+.feature-open svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.22s ease;
+}
+.feature-card:hover .feature-open { color: var(--accent-lime); gap: 9px; }
+.feature-card:hover .feature-open svg { transform: translateX(2px); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer.site-footer {
+  margin-top: 48px;
+  padding: 0 var(--pad-desktop) 40px;
+}
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.footer-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: minmax(200px, 1.3fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(220px, 1.5fr);
+  gap: 32px;
+  box-shadow: 0 12px 32px var(--shadow-color);
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.footer-brand .brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.footer-brand .brand-mark svg { width: 14px; height: 14px; }
+.footer-brand span { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+.footer-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 320px;
+}
+.footer-col { min-width: 0; }
+.footer-col-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-links a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-links a:hover { color: var(--text-primary); }
+.footer-risk-text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 20px;
+}
+.footer-copyright { font-size: 12.5px; color: var(--text-muted); }
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-social a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-social a:hover { color: var(--text-primary); }
+.footer-x {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.footer-x svg { width: 13px; height: 13px; }
+.footer-social a.footer-x { color: var(--text-primary); text-decoration: none; }
+
+@media (max-width: 800px) {
+  .footer-card { grid-template-columns: 1fr 1fr; }
+  .footer-card .footer-brand-col { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  footer.site-footer { padding: 0 20px 32px; }
+  .footer-card { grid-template-columns: 1fr; padding: 28px; gap: 26px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 860px) {
+  :root { --pad-desktop: 20px; }
+
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  .navbar-inner { height: 64px; }
+
+  .explore-header { padding-top: 36px; }
+  .explore-heading h1 { font-size: 28px; }
+
+  .feature-grid { grid-template-columns: 1fr; gap: 16px; }
+  .feature-card { padding: 26px; min-height: 0; }
+}
+
+@media (max-width: 480px) {
+  .brand-name { font-size: 16px; }
+  :root { --pad-desktop: 14px; }
+
+  .feature-card { padding: 22px; }
+  .feature-title { font-size: 19px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<header class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+      <span class="brand-name">Vireon</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Explore</a>
+      <a href="launch.html" class="nav-link">Launch</a>
+      <a href="featured.html" class="nav-link active">Featured</a>
+    </nav>
+
+    <div class="nav-right">
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle light/dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button class="btn-connect">Connect Wallet</button>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="nav-link">Explore</a>
+    <a href="launch.html" class="nav-link">Launch</a>
+    <a href="featured.html" class="nav-link active">Featured</a>
+    <button class="theme-toggle-btn" id="themeToggleBtnMobile" aria-label="Toggle light/dark mode" style="margin-top: 6px;">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main>
+  <div class="shell">
+
+    <!-- Page header -->
+    <section class="explore-header">
+      <div class="explore-heading">
+        <h1>Featured</h1>
+        <p>Explore protocol features, rewards and transparency.</p>
+      </div>
+    </section>
+
+    <div class="featured-content">
+      <div class="feature-grid">
+
+        <!-- Fee Claim -->
+        <a class="feature-card" href="fee-claim.html" aria-label="Open Fee Claim">
+          <div class="feature-eyebrow">Rewards</div>
+          <div class="feature-title">Fee Claim</div>
+          <p class="feature-desc">Claim protocol fees for a fixed fee of 0.0005 ETH per claim.</p>
+          <div class="feature-highlight">0.0005 ETH / claim</div>
+          <div class="feature-open">
+            OPEN
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </a>
+
+        <!-- Stake -->
+        <a class="feature-card" href="stake.html" aria-label="Open Stake">
+          <div class="feature-eyebrow">Staking</div>
+          <div class="feature-title">Stake</div>
+          <p class="feature-desc">Stake tokens and participate in protocol rewards distributed through a 3 day epoch.</p>
+          <div class="feature-highlight">3 Day Epoch</div>
+          <div class="feature-open">
+            OPEN
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </a>
+
+        <!-- Protocol Stats -->
+        <a class="feature-card" href="protocol-stats.html" aria-label="Open Protocol Stats">
+          <div class="feature-eyebrow">Protocol</div>
+          <div class="feature-title">Protocol Stats</div>
+          <p class="feature-desc">View protocol activity, token burns, treasury and fee statistics.</p>
+          <div class="feature-highlight">Protocol Overview</div>
+          <div class="feature-open">
+            OPEN
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-card">
+      <div class="footer-brand-col">
+        <div class="footer-brand">
+          <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+          <span>Vireon</span>
+        </div>
+        <p class="footer-desc">Explore tokens launched through Vireon on Robinhood Chain. Your wallet submits every transaction. Vireon does not custody assets.</p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="index.html">Explore</a>
+          <a href="launch.html">Launch</a>
+          <a href="featured.html">Featured</a>
+          <a href="#">Profile</a>
+          <a href="docs.html">Docs</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="legal.html#privacy">Privacy Policy</a>
+          <a href="legal.html#terms">Terms of Use</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Risk notice</div>
+        <p class="footer-risk-text">Transactions are submitted through your wallet and may be irreversible. Tokens can be volatile or lose all value. Vireon does not provide custody, guarantees, or financial advice.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2026 Vireon.</span>
+      <div class="footer-social">
+        <a href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer">@Vireonlaunch</a>
+        <a class="footer-x" href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer" aria-label="Vireon on X">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-6.9l-5.4-7-6.2 7H1.8l8-9.2L1 2h7.1l4.9 6.4L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ----------------------------------------------------------
+  // Theme toggle (light / dark) — same storage key as the rest
+  // of the Vireon site, so the theme stays in sync across pages.
+  // ----------------------------------------------------------
+  (function () {
+    const root = document.documentElement;
+    const btnDesktop = document.getElementById('themeToggleBtn');
+    const btnMobile = document.getElementById('themeToggleBtnMobile');
+    const STORAGE_KEY = 'vireon-theme';
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+    }
+
+    let stored = null;
+    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const initial = stored || (prefersLight ? 'light' : 'dark');
+    applyTheme(initial);
+
+    function toggleTheme() {
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const next = isLight ? 'dark' : 'light';
+      applyTheme(next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+    }
+
+    if (btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+    if (btnMobile) btnMobile.addEventListener('click', toggleTheme);
+  })();
+
+  // ----------------------------------------------------------
+  // Mobile menu toggle
+  // ----------------------------------------------------------
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+
+</script>
+
+<script type="module" src="wallet.js"></script>
+</body>
+</html>
