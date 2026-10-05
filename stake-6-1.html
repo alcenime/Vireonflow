@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png">
+<title>Vireon — Stake</title>
+<meta name="description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta property="og:site_name" content="Vireon">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta property="og:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vireon — Token Launch & Discovery on Robinhood Chain">
+<meta name="twitter:description" content="Launch, discover, and explore tokens on Robinhood Chain.">
+<style>
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(1100px 600px at 18% 0%, var(--gradient-1) 0%, var(--gradient-1-end) 60%),
+    radial-gradient(900px 500px at 85% 10%, var(--gradient-2) 0%, var(--gradient-2-end) 55%),
+    var(--bg-base);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+input { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 2px; }
+
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+:root {
+  --bg-base: #0A0714;
+  --bg-elevated: #080B0C;
+  --bg-panel: #0C1112;
+  --bg-card: #0E1414;
+
+  --accent-lime: #C8FF00;
+  --accent-lime-soft: #D7FF45;
+  --accent-lime-dim: rgba(200, 255, 0, 0.12);
+  --accent-lime-border: rgba(200, 255, 0, 0.28);
+
+  --text-primary: #F4F6F2;
+  --text-secondary: #A9B0AC;
+  --text-muted: #6B726D;
+
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-card: rgba(200, 255, 0, 0.10);
+
+  --navbar-bg: rgba(10, 7, 20, 0.85);
+  --brand-gradient-end: #7FBF00;
+  --shadow-color: rgba(0, 0, 0, 0.55);
+  --gradient-1: rgba(132, 204, 22, 0.28);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.14);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+
+  --max-width: 1460px;
+  --pad-desktop: 40px;
+}
+
+:root[data-theme="light"] {
+  --bg-base: #FAF9FD;
+  --bg-elevated: #FFFFFF;
+  --bg-panel: #FFFFFF;
+  --bg-card: #F3F6EE;
+
+  --accent-lime: #6FA800;
+  --accent-lime-soft: #8FCB00;
+  --accent-lime-dim: rgba(111, 168, 0, 0.10);
+  --accent-lime-border: rgba(111, 168, 0, 0.28);
+
+  --text-primary: #12160F;
+  --text-secondary: #5B6355;
+  --text-muted: #8B9285;
+
+  --border-subtle: rgba(18, 22, 15, 0.08);
+  --border-card: rgba(111, 168, 0, 0.16);
+
+  --navbar-bg: rgba(250, 249, 253, 0.85);
+  --brand-gradient-end: #C8FF00;
+  --shadow-color: rgba(80, 100, 40, 0.14);
+  --gradient-1: rgba(132, 204, 22, 0.10);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.08);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+}
+
+html { transition: background-color 0.2s ease; }
+body, .navbar { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: var(--pad-desktop);
+  padding-right: var(--pad-desktop);
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.navbar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--pad-desktop);
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 18px; height: 18px; }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.btn-open-app {
+  padding: 10px 20px;
+  background: var(--accent-lime);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-open-app:hover { background: var(--accent-lime-soft); transform: translateY(-1px); }
+.btn-open-app:active { transform: translateY(0); }
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle-btn:hover { border-color: var(--accent-lime-border); color: var(--text-primary); }
+.theme-toggle-btn svg { width: 17px; height: 17px; }
+.theme-toggle-btn .icon-sun { display: none; }
+.theme-toggle-btn .icon-moon { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-sun { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-moon { display: none; }
+
+/* ============================================================
+   MAIN / PAGE HEADER
+   ============================================================ */
+main {
+  padding-top: 76px;
+}
+.explore-header {
+  padding: 56px 0 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.explore-heading h1 {
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.explore-heading p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   STAKE — layout
+   ============================================================ */
+.stake-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.stake-content { padding-bottom: 64px; }
+.stake-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.stake-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* ============================================================
+   STAKE — panels
+   ============================================================ */
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  min-width: 0;
+}
+.panel-eyebrow {
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent-lime-soft);
+  margin-bottom: 12px;
+}
+.panel-title {
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.panel-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ---- Stake form ---- */
+.balance-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 26px 0 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.balance-value {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.field-label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+.amount-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 8px 8px 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.amount-field:focus-within {
+  border-color: var(--accent-lime);
+  box-shadow: 0 0 0 3px var(--accent-lime-dim);
+}
+.amount-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 8px 0;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.amount-input::placeholder { color: var(--text-muted); }
+.amount-symbol {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.btn-max {
+  min-height: 40px;
+  padding: 0 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.btn-max:hover { border-color: var(--accent-lime-border); color: var(--accent-lime); }
+
+.btn-primary-lg {
+  margin-top: 22px;
+  width: 100%;
+  min-height: 52px;
+  padding: 15px 0;
+  background: var(--accent-lime);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14.5px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-primary-lg:hover { background: var(--accent-lime-soft); transform: translateY(-1px); }
+.btn-primary-lg:active { transform: translateY(0); }
+
+.btn-secondary-lg {
+  margin-top: 20px;
+  width: 100%;
+  min-height: 48px;
+  padding: 13px 0;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--accent-lime-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.btn-secondary-lg:hover { background: var(--accent-lime-dim); border-color: var(--accent-lime); }
+
+.stake-note {
+  margin-top: 16px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* ---- Current epoch ---- */
+.epoch-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+.epoch-number {
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+.epoch-badge {
+  padding: 5px 12px;
+  background: var(--accent-lime-dim);
+  border: 1px solid var(--accent-lime-border);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.epoch-progress-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 24px 0 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.epoch-percent {
+  font-weight: 650;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.progress-track {
+  height: 8px;
+  background: var(--border-subtle);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent-lime);
+  border-radius: var(--radius-pill);
+  transition: width 0.4s ease;
+}
+.epoch-remaining {
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Rewards ---- */
+.reward-highlight {
+  margin-top: 22px;
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.reward-highlight-label {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.stat-list { margin-top: 20px; }
+.stat-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.stat-label { font-size: 14px; color: var(--text-secondary); }
+.stat-value {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ---- How staking works ---- */
+.how-panel { margin-top: 20px; }
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 24px;
+}
+.step {
+  padding: 0 28px;
+  border-left: 1px solid var(--border-subtle);
+}
+.step:first-child { padding-left: 0; border-left: none; }
+.step:last-child { padding-right: 0; }
+.step-num {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  color: var(--accent-lime-soft);
+  margin-bottom: 10px;
+}
+.step-title {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.step-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ---- Toast (placeholder feedback) ---- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 12px);
+  max-width: calc(100% - 28px);
+  padding: 12px 20px;
+  background: var(--bg-panel);
+  border: 1px solid var(--accent-lime-border);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 12px 32px var(--shadow-color);
+  font-size: 13.5px;
+  color: var(--text-primary);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 200;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer.site-footer {
+  margin-top: 48px;
+  padding: 0 var(--pad-desktop) 40px;
+}
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.footer-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: minmax(200px, 1.3fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(220px, 1.5fr);
+  gap: 32px;
+  box-shadow: 0 12px 32px var(--shadow-color);
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.footer-brand .brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.footer-brand .brand-mark svg { width: 14px; height: 14px; }
+.footer-brand span { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+.footer-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 320px;
+}
+.footer-col { min-width: 0; }
+.footer-col-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-links a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-links a:hover { color: var(--text-primary); }
+.footer-risk-text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 20px;
+}
+.footer-copyright { font-size: 12.5px; color: var(--text-muted); }
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-social a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-social a:hover { color: var(--text-primary); }
+.footer-x {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.footer-x svg { width: 13px; height: 13px; }
+.footer-social a.footer-x { color: var(--text-primary); text-decoration: none; }
+
+@media (max-width: 800px) {
+  .footer-card { grid-template-columns: 1fr 1fr; }
+  .footer-card .footer-brand-col { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  footer.site-footer { padding: 0 20px 32px; }
+  .footer-card { grid-template-columns: 1fr; padding: 28px; gap: 26px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 860px) {
+  :root { --pad-desktop: 20px; }
+
+  .navbar-inner { height: 64px; }
+
+  .explore-header { padding-top: 36px; }
+  .explore-heading h1 { font-size: 28px; }
+
+  .stake-layout { grid-template-columns: 1fr; }
+  .panel { padding: 26px; }
+  .steps { grid-template-columns: 1fr; }
+  .step,
+  .step:first-child,
+  .step:last-child {
+    padding: 20px 0;
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .step:first-child { padding-top: 0; border-top: none; }
+  .step:last-child { padding-bottom: 0; }
+}
+
+@media (max-width: 480px) {
+  .brand-name { font-size: 16px; }
+  :root { --pad-desktop: 14px; }
+
+  .panel { padding: 22px; }
+  .panel-title { font-size: 19px; }
+  .amount-input { font-size: 20px; }
+  .epoch-number { font-size: 24px; }
+  .reward-highlight { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<header class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+      <span class="brand-name">Vireon</span>
+    </a>
+
+    <div class="nav-right">
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle light/dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <a href="featured.html" class="btn-open-app">← Back</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main>
+  <div class="shell">
+    <div class="stake-shell">
+
+      <!-- Page header -->
+      <section class="explore-header">
+        <div class="explore-heading">
+          <h1>Stake</h1>
+          <p>Stake tokens and participate in protocol rewards distributed through a 3 day epoch.</p>
+        </div>
+      </section>
+
+      <div class="stake-content">
+        <div class="stake-layout">
+
+          <!-- Stake panel -->
+          <section class="panel stake-panel" id="stakePanel" aria-labelledby="stakeTitle">
+            <div class="panel-eyebrow">Staking</div>
+            <h2 class="panel-title" id="stakeTitle">Stake</h2>
+            <p class="panel-desc">Stake your tokens to participate in protocol rewards.</p>
+
+            <div class="balance-row">
+              <span>Wallet Balance</span>
+              <span class="balance-value"><span id="walletBalance">0.00</span> <span class="token-symbol">TOKEN</span></span>
+            </div>
+
+            <label class="field-label" for="stakeAmount">Amount to Stake</label>
+            <div class="amount-field">
+              <input class="amount-input" id="stakeAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-label="Amount to stake">
+              <span class="amount-symbol token-symbol">TOKEN</span>
+              <button type="button" class="btn-max" id="btnMax">MAX</button>
+            </div>
+
+            <button type="button" class="btn-primary-lg" id="btnStake">Stake</button>
+            <p class="stake-note">Staking is not live yet. Your wallet will submit every transaction once it is available.</p>
+          </section>
+
+          <!-- Side column -->
+          <div class="stake-side">
+
+            <!-- Current epoch -->
+            <section class="panel epoch-panel" aria-labelledby="epochTitle">
+              <div class="panel-eyebrow">Epoch</div>
+              <h2 class="panel-title" id="epochTitle">Current Epoch</h2>
+
+              <div class="epoch-head">
+                <div class="epoch-number" id="epochNumber">Epoch #—</div>
+                <span class="epoch-badge" id="epochLength">3 Day Epoch</span>
+              </div>
+
+              <div class="epoch-progress-meta">
+                <span>Epoch Progress</span>
+                <span class="epoch-percent" id="epochPercent">—</span>
+              </div>
+              <div class="progress-track" role="progressbar" aria-label="Epoch progress" aria-valuemin="0" aria-valuemax="100" id="epochProgressTrack">
+                <div class="progress-fill" id="epochProgress"></div>
+              </div>
+              <div class="epoch-remaining" id="epochRemaining">—</div>
+            </section>
+
+            <!-- Rewards -->
+            <section class="panel rewards-panel" aria-labelledby="rewardsTitle">
+              <div class="panel-eyebrow">Rewards</div>
+              <h2 class="panel-title" id="rewardsTitle">Your Rewards</h2>
+
+              <div class="reward-highlight"><span id="pendingRewards">0.00</span> ETH</div>
+              <div class="reward-highlight-label">Pending Rewards</div>
+
+              <div class="stat-list">
+                <div class="stat-row">
+                  <span class="stat-label">Total Staked</span>
+                  <span class="stat-value"><span id="totalStaked">0.00</span> <span class="token-symbol">TOKEN</span></span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Epochs Participated</span>
+                  <span class="stat-value" id="epochsParticipated">0</span>
+                </div>
+              </div>
+
+              <button type="button" class="btn-secondary-lg" id="btnClaim">Claim Rewards</button>
+            </section>
+
+          </div>
+        </div>
+
+        <!-- How staking works -->
+        <section class="panel how-panel" aria-labelledby="howTitle">
+          <div class="panel-eyebrow">Overview</div>
+          <h2 class="panel-title" id="howTitle">How Staking Works</h2>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">01</div>
+              <div class="step-title">Stake</div>
+              <p class="step-text">Deposit supported tokens into the Vireon staking system.</p>
+            </div>
+            <div class="step">
+              <div class="step-num">02</div>
+              <div class="step-title">3 Day Epoch</div>
+              <p class="step-text">Staked positions participate in the current 3-day reward epoch.</p>
+            </div>
+            <div class="step">
+              <div class="step-num">03</div>
+              <div class="step-title">Rewards</div>
+              <p class="step-text">Rewards are distributed according to the protocol's active reward mechanism.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-card">
+      <div class="footer-brand-col">
+        <div class="footer-brand">
+          <span class="brand-mark"><img src="https://raw.githubusercontent.com/alcenime/Vireonflow/main/assets/logo/logo.png" alt=""></span>
+          <span>Vireon</span>
+        </div>
+        <p class="footer-desc">Launch and explore tokens on Robinhood Chain. Your wallet submits every transaction. Vireon does not custody assets.</p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="index.html">Explore</a>
+          <a href="launch.html">Launch</a>
+          <a href="featured.html">Featured</a>
+          <a href="stake.html">Stake</a>
+          <a href="protocol-stats.html">Protocol Stats</a>
+          <a href="profile.html">Profile</a>
+          <a href="docs.html">Docs</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="legal.html#privacy">Privacy Policy</a>
+          <a href="legal.html#terms">Terms of Use</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Risk notice</div>
+        <p class="footer-risk-text">Transactions are submitted through your wallet and may be irreversible. Tokens can be volatile or lose all value. Vireon does not provide custody, guarantees, or financial advice.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2026 Vireon.</span>
+      <div class="footer-social">
+        <a href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer">@Vireonlaunch</a>
+        <a class="footer-x" href="https://x.com/Vireonlaunch" target="_blank" rel="noopener noreferrer" aria-label="Vireon on X">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-6.9l-5.4-7-6.2 7H1.8l8-9.2L1 2h7.1l4.9 6.4L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ----------------------------------------------------------
+  // Theme toggle (light / dark) — same storage key as the rest
+  // of the Vireon site, so the theme stays in sync across pages.
+  // ----------------------------------------------------------
+  (function () {
+    const root = document.documentElement;
+    const btnDesktop = document.getElementById('themeToggleBtn');
+    const STORAGE_KEY = 'vireon-theme';
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+    }
+
+    let stored = null;
+    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const initial = stored || (prefersLight ? 'light' : 'dark');
+    applyTheme(initial);
+
+    function toggleTheme() {
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const next = isLight ? 'dark' : 'light';
+      applyTheme(next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+    }
+
+    if (btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+  })();
+
+  // ----------------------------------------------------------
+  // STAKE PAGE — UI only (no wallet, no contracts, no transactions)
+  //
+  // Everything the page renders comes from the two state objects
+  // below. When real staking is added, fill these from the chain
+  // and call renderEpoch() / renderPosition() again; the markup
+  // and IDs (#epochNumber, #epochProgress, #epochRemaining,
+  // #walletBalance, #pendingRewards, #totalStaked,
+  // #epochsParticipated) stay the same.
+  // ----------------------------------------------------------
+  const EPOCH_DURATION_HOURS = 72; // 3 Day Epoch
+
+  // null = no data yet (nothing is shown until real values are set)
+  const epochState = {
+    number: null,
+    remainingHours: null
+  };
+
+  const positionState = {
+    walletBalance: 0,
+    totalStaked: 0,
+    pendingRewards: 0,
+    epochsParticipated: 0,
+    tokenSymbol: 'TOKEN'
+  };
+
+  const el = (id) => document.getElementById(id);
+  const fmt = (n) => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+
+  function formatRemaining(hours) {
+    const total = Math.max(0, Math.round(hours));
+    const d = Math.floor(total / 24);
+    const h = String(total % 24).padStart(2, '0');
+    return d + 'd ' + h + 'h remaining';
+  }
+
+  function renderEpoch() {
+    if (epochState.number === null || epochState.remainingHours === null) {
+      el('epochNumber').textContent = 'Epoch #—';
+      el('epochProgress').style.width = '0%';
+      el('epochPercent').textContent = '—';
+      el('epochProgressTrack').removeAttribute('aria-valuenow');
+      el('epochRemaining').textContent = '—';
+      return;
+    }
+    const elapsed = EPOCH_DURATION_HOURS - epochState.remainingHours;
+    const pct = Math.min(100, Math.max(0, (elapsed / EPOCH_DURATION_HOURS) * 100));
+    el('epochNumber').textContent = 'Epoch #' + epochState.number;
+    el('epochProgress').style.width = pct.toFixed(1) + '%';
+    el('epochPercent').textContent = Math.round(pct) + '%';
+    el('epochProgressTrack').setAttribute('aria-valuenow', String(Math.round(pct)));
+    el('epochRemaining').textContent = formatRemaining(epochState.remainingHours);
+  }
+
+  function renderPosition() {
+    el('walletBalance').textContent = fmt(positionState.walletBalance);
+    el('totalStaked').textContent = fmt(positionState.totalStaked);
+    el('pendingRewards').textContent = fmt(positionState.pendingRewards);
+    el('epochsParticipated').textContent = String(positionState.epochsParticipated);
+    document.querySelectorAll('.token-symbol').forEach((n) => { n.textContent = positionState.tokenSymbol; });
+  }
+
+  // Toast — placeholder feedback for actions that are not live yet
+  let toastTimer = null;
+  function showToast(message) {
+    const t = el('toast');
+    t.textContent = message;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // Amount input: digits and a single decimal point only
+  const amountInput = el('stakeAmount');
+  amountInput.addEventListener('input', () => {
+    let v = amountInput.value.replace(/[^0-9.]/g, '');
+    const firstDot = v.indexOf('.');
+    if (firstDot !== -1) v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, '');
+    amountInput.value = v;
+  });
+
+  // MAX — placeholder: fills the (currently zero) wallet balance
+  el('btnMax').addEventListener('click', () => {
+    if (positionState.walletBalance > 0) {
+      amountInput.value = String(positionState.walletBalance);
+    } else {
+      showToast('Connect a wallet to use MAX.');
+    }
+  });
+
+  // Stake — placeholder: no transaction is created
+  el('btnStake').addEventListener('click', () => {
+    showToast('Staking is not available yet.');
+  });
+
+  // Claim Rewards — placeholder: no claim is made
+  el('btnClaim').addEventListener('click', () => {
+    showToast('Claiming is not available yet.');
+  });
+
+  renderEpoch();
+  renderPosition();
+</script>
+
+</body>
+</html>
