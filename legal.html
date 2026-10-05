@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ponsly — Legal</title>
+<style>
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(1100px 600px at 18% 0%, var(--gradient-1) 0%, var(--gradient-1-end) 60%),
+    radial-gradient(900px 500px at 85% 10%, var(--gradient-2) 0%, var(--gradient-2-end) 55%),
+    var(--bg-base);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+input { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 2px; }
+
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+:root {
+  --bg-base: #0A0714;
+  --bg-elevated: #0F0B1D;
+  --bg-panel: #13102A;
+  --bg-card: #120E24;
+
+  --accent-lime: #84CC16;
+  --accent-lime-soft: #BEF264;
+  --accent-lime-dim: rgba(132, 204, 22, 0.16);
+  --accent-lime-border: rgba(132, 204, 22, 0.35);
+
+  --text-primary: #F4F2FA;
+  --text-secondary: #A9A2C2;
+  --text-muted: #6E6784;
+
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-card: rgba(132, 204, 22, 0.16);
+
+  --hover-subtle: rgba(255, 255, 255, 0.03);
+  --kbd-bg: rgba(255, 255, 255, 0.06);
+  --navbar-bg: rgba(10, 7, 20, 0.85);
+  --shadow-color: rgba(0, 0, 0, 0.55);
+  --gradient-1: rgba(132, 204, 22, 0.28);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.14);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+  --btn-open-app-text: var(--bg-base);
+  --brand-gradient-end: #365314;
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+
+  --max-width: 1460px;
+  --pad-desktop: 40px;
+}
+
+:root[data-theme="light"] {
+  --bg-base: #FAF9FD;
+  --bg-elevated: #FFFFFF;
+  --bg-panel: #FFFFFF;
+  --bg-card: #F6F4FB;
+
+  --accent-lime: #65A30D;
+  --accent-lime-soft: #84CC16;
+  --accent-lime-dim: rgba(101, 163, 13, 0.08);
+  --accent-lime-border: rgba(101, 163, 13, 0.28);
+
+  --text-primary: #1C1530;
+  --text-secondary: #5C5570;
+  --text-muted: #928CA3;
+
+  --border-subtle: rgba(28, 16, 55, 0.08);
+  --border-card: rgba(101, 163, 13, 0.14);
+
+  --hover-subtle: rgba(28, 16, 55, 0.035);
+  --kbd-bg: rgba(28, 16, 55, 0.06);
+  --navbar-bg: rgba(250, 249, 253, 0.85);
+  --shadow-color: rgba(80, 40, 130, 0.14);
+  --gradient-1: rgba(132, 204, 22, 0.10);
+  --gradient-1-end: rgba(132, 204, 22, 0);
+  --gradient-2: rgba(190, 242, 100, 0.08);
+  --gradient-2-end: rgba(190, 242, 100, 0);
+  --btn-open-app-text: #FFFFFF;
+  --brand-gradient-end: #BEF264;
+}
+
+html { transition: background-color 0.2s ease; }
+body, .navbar, .docs-search-modal, .docs-search-overlay {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: var(--pad-desktop);
+  padding-right: var(--pad-desktop);
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.navbar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--pad-desktop);
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, var(--accent-lime) 0%, var(--brand-gradient-end) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 18px; height: 18px; }
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* Docs-only navbar: search + open app, no app-level links */
+.docs-search-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  max-width: 360px;
+  padding: 9px 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  transition: border-color 0.2s ease;
+}
+.docs-search-btn:hover { border-color: var(--accent-lime-border); }
+.docs-search-btn svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+.docs-search-btn-label { flex: 1; text-align: left; white-space: nowrap; }
+.docs-search-btn-kbd {
+  padding: 2px 6px;
+  background: var(--kbd-bg);
+  border-radius: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   SEARCH MODAL
+   ============================================================ */
+.docs-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(5, 3, 12, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 90px 16px 16px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.docs-search-overlay.open {
+  display: flex;
+  opacity: 1;
+}
+.docs-search-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: min(72vh, 640px);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px var(--shadow-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(-8px);
+  transition: transform 0.15s ease;
+}
+.docs-search-overlay.open .docs-search-modal { transform: translateY(0); }
+
+.docs-search-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+.docs-search-input-row svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.docs-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+.docs-search-input::placeholder { color: var(--text-muted); }
+.docs-search-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 4px;
+  display: flex;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.docs-search-close:hover { color: var(--text-primary); }
+.docs-search-close svg { width: 18px; height: 18px; }
+
+.docs-search-results {
+  overflow-y: auto;
+  padding: 8px;
+}
+.docs-search-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.docs-search-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.docs-search-result + .docs-search-result { margin-top: 2px; }
+.docs-search-result:hover,
+.docs-search-result.active {
+  background: var(--accent-lime-dim);
+}
+.docs-search-result-body { flex: 1; min-width: 0; }
+.docs-search-result-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.docs-search-result-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.docs-search-result-desc .grp {
+  color: var(--accent-lime-soft);
+  font-weight: 500;
+}
+.docs-search-result-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.docs-search-result:hover .docs-search-result-chevron,
+.docs-search-result.active .docs-search-result-chevron { opacity: 0.8; }
+
+@media (max-width: 640px) {
+  .docs-search-overlay { padding: 64px 12px 12px; align-items: flex-start; }
+  .docs-search-modal { max-height: 76vh; }
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-open-app {
+  padding: 10px 20px;
+  background: var(--accent-lime);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+.btn-open-app:hover { background: var(--accent-lime-soft); transform: translateY(-1px); }
+.btn-open-app:active { transform: translateY(0); }
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle-btn:hover { border-color: var(--accent-lime-border); color: var(--text-primary); }
+.theme-toggle-btn svg { width: 18px; height: 18px; }
+.theme-toggle-btn .icon-sun { display: none; }
+.theme-toggle-btn .icon-moon { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-sun { display: block; }
+:root[data-theme="light"] .theme-toggle-btn .icon-moon { display: none; }
+
+/* ============================================================
+   DOCS LAYOUT
+   ============================================================ */
+main.docs-main-wrap {
+  padding-top: 76px;
+}
+
+.docs-shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--pad-desktop);
+  display: flex;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+/* ---- Sidebar ---- */
+.docs-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 96px;
+  max-height: calc(100vh - 116px);
+  overflow-y: auto;
+  padding: 40px 0 40px;
+  scrollbar-width: thin;
+}
+.docs-sidebar-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.docs-nav-group { margin-bottom: 22px; }
+.docs-nav-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  padding: 0 12px;
+}
+.docs-nav-link {
+  display: block;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid transparent;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  margin-bottom: 2px;
+}
+.docs-nav-link:hover { color: var(--text-primary); background: var(--hover-subtle); }
+.docs-nav-link.active {
+  color: var(--text-primary);
+  background: var(--accent-lime-dim);
+  border-left-color: var(--accent-lime);
+  font-weight: 600;
+}
+
+/* ---- Mobile docs menu ---- */
+.docs-mobile-bar {
+  display: none;
+  padding: 16px 0 4px;
+}
+.docs-menu-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+.docs-menu-btn svg { width: 16px; height: 16px; color: var(--text-secondary); transition: transform 0.2s ease; }
+.docs-menu-btn.open svg { transform: rotate(180deg); }
+.docs-mobile-drawer {
+  display: none;
+  margin-top: 8px;
+  padding: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+}
+.docs-mobile-drawer.open { display: block; }
+
+/* ---- Main content ---- */
+.docs-content {
+  flex: 1;
+  min-width: 0;
+  max-width: 780px;
+  padding: 40px 0 100px;
+}
+
+.doc-section {
+  padding-top: 32px;
+  margin-top: -32px;
+}
+.doc-section + .doc-section {
+  margin-top: 88px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.doc-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-lime-soft);
+  margin-bottom: 14px;
+}
+.doc-h1 {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+  line-height: 1.15;
+}
+.doc-lede {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  max-width: 620px;
+  margin-bottom: 8px;
+}
+.doc-h2 {
+  font-size: 20px;
+  font-weight: 650;
+  color: var(--text-primary);
+  margin: 40px 0 14px;
+  letter-spacing: -0.01em;
+}
+.doc-p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 14px;
+  max-width: 660px;
+}
+.doc-p strong { color: var(--text-primary); font-weight: 600; }
+
+.doc-list {
+  margin: 0 0 14px;
+  padding-left: 0;
+  max-width: 660px;
+}
+.doc-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.doc-list li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-lime-soft);
+}
+.doc-list li strong { color: var(--text-primary); font-weight: 600; }
+
+/* ---- Hero heading (Overview / Fee Back) ---- */
+.doc-hero-heading {
+  font-size: 44px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--text-primary) 20%, var(--accent-lime-soft) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 6px 0 20px;
+}
+
+/* ---- Flow diagram ---- */
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  margin: 24px 0 8px;
+}
+.flow-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.flow-node.accent {
+  border-color: var(--accent-lime-border);
+  background: var(--accent-lime-dim);
+  color: var(--accent-lime-soft);
+}
+.flow-node-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  padding: 6px 0 6px 30px;
+  color: var(--text-muted);
+}
+.flow-arrow svg { width: 16px; height: 16px; }
+.flow-plus {
+  padding: 4px 0 4px 30px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* ---- Feature cards ---- */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 20px 0 8px;
+}
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.feature-card:hover { border-color: var(--accent-lime-border); transform: translateY(-2px); }
+.feature-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--accent-lime-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.feature-icon svg { width: 17px; height: 17px; color: var(--accent-lime-soft); }
+.feature-title { font-size: 15px; font-weight: 650; color: var(--text-primary); margin-bottom: 6px; }
+.feature-text { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+
+/* ---- Numbered steps ---- */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 22px 0 8px;
+}
+.step-item {
+  display: flex;
+  gap: 18px;
+  padding: 22px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.step-item:first-child { border-top: none; padding-top: 0; }
+.step-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-lime-soft);
+}
+.step-body { flex: 1; min-width: 0; }
+.step-title { font-size: 15.5px; font-weight: 650; color: var(--text-primary); margin-bottom: 6px; }
+.step-text { font-size: 14px; color: var(--text-secondary); line-height: 1.65; max-width: 560px; }
+
+/* ---- Callout / highlight box ---- */
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-left: 3px solid var(--accent-lime);
+  border-radius: var(--radius-sm);
+  margin: 18px 0;
+}
+.callout svg { width: 16px; height: 16px; color: var(--accent-lime-soft); flex-shrink: 0; margin-top: 2px; }
+.callout p { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+.callout p em { color: var(--text-secondary); font-style: normal; }
+.callout.muted { border-left-color: var(--text-muted); }
+.callout.muted svg { color: var(--text-muted); }
+
+/* ---- Comparison table ---- */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 22px 0 8px;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+}
+table.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+.compare-table th, .compare-table td {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+.compare-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--bg-card);
+}
+.compare-table th:first-child, .compare-table td:first-child {
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: normal;
+  min-width: 200px;
+}
+.compare-table td { color: var(--text-secondary); white-space: normal; }
+.compare-table tbody tr:last-child th,
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.check-yes { color: var(--accent-lime-soft); font-weight: 700; }
+.check-no { color: var(--text-muted); font-weight: 700; }
+
+/* ---- Fee visuals ---- */
+.fee-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  margin: 24px 0;
+}
+.fee-hero-num {
+  font-size: 56px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: var(--accent-lime-soft);
+}
+.fee-hero-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 8px 0 22px;
+}
+.split-card {
+  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.split-card .split-pct {
+  font-size: 34px;
+  font-weight: 750;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.split-card.creator .split-pct { color: var(--accent-lime-soft); }
+.split-card .split-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.example-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  margin: 18px 0;
+}
+.example-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.example-row:last-child { border-bottom: none; }
+.example-row.total { padding-top: 14px; }
+.example-label { font-size: 14px; color: var(--text-secondary); }
+.example-value { font-size: 15px; font-weight: 650; color: var(--text-primary); }
+.example-value.accent { color: var(--accent-lime-soft); }
+
+/* ---- Fee Back reward card ---- */
+.reward-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  margin: 22px 0;
+  overflow: hidden;
+}
+.reward-stat {
+  padding: 28px 20px;
+  text-align: center;
+  border-right: 1px solid var(--border-subtle);
+}
+.reward-stat:last-child { border-right: none; }
+.reward-stat-num {
+  font-size: 28px;
+  font-weight: 750;
+  color: var(--accent-lime-soft);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.reward-stat-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---- FAQ accordion ---- */
+.faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.faq-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary .chev { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; transition: transform 0.2s ease; }
+.faq-item[open] summary .chev { transform: rotate(180deg); }
+.faq-answer { padding: 0 20px 18px; font-size: 14px; color: var(--text-secondary); line-height: 1.65; max-width: 620px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer.site-footer {
+  margin-top: 48px;
+  padding: 0 var(--pad-desktop) 40px;
+}
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.footer-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: minmax(200px, 1.3fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(220px, 1.5fr);
+  gap: 32px;
+  box-shadow: 0 12px 32px var(--shadow-color);
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.footer-brand .brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: linear-gradient(145deg, var(--accent-lime) 0%, var(--brand-gradient-end) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.footer-brand .brand-mark svg { width: 14px; height: 14px; }
+.footer-brand span { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+.footer-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 320px;
+}
+.footer-col { min-width: 0; }
+.footer-col-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-links a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-links a:hover { color: var(--text-primary); }
+.footer-risk-text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 20px;
+}
+.footer-copyright { font-size: 12.5px; color: var(--text-muted); }
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-social a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-social a:hover { color: var(--text-primary); }
+.footer-x {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.footer-x svg { width: 13px; height: 13px; }
+
+@media (max-width: 800px) {
+  .footer-card { grid-template-columns: 1fr 1fr; }
+  .footer-card .footer-brand-col { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  footer.site-footer { padding: 0 20px 32px; }
+  .footer-card { grid-template-columns: 1fr; padding: 28px; gap: 26px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  .docs-sidebar { display: none; }
+  .docs-mobile-bar { display: block; }
+  .docs-content { max-width: 100%; padding-top: 8px; }
+
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .reward-card { grid-template-columns: 1fr; }
+  .reward-stat { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+  .reward-stat:last-child { border-bottom: none; }
+}
+
+@media (max-width: 640px) {
+  .shell, .docs-shell { padding-left: 20px; padding-right: 20px; }
+  .navbar-inner { padding: 0 20px; }
+  .docs-search-btn-kbd { display: none; }
+  .doc-h1 { font-size: 27px; }
+  .doc-hero-heading { font-size: 32px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .split-grid { grid-template-columns: 1fr; }
+  .fee-hero { flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px; }
+  .fee-hero-num { font-size: 44px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<header class="navbar">
+  <div class="navbar-inner">
+    <button class="docs-search-btn" id="docsSearchBtn" aria-label="Search legal">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="docs-search-btn-label">Search legal</span>
+      <span class="docs-search-btn-kbd">⌘K</span>
+    </button>
+
+    <div class="nav-right">
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle light/dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <a href="index.html" class="btn-open-app">Open app</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     SEARCH MODAL
+     ============================================================ -->
+<div class="docs-search-overlay" id="docsSearchOverlay">
+  <div class="docs-search-modal" id="docsSearchModal">
+    <div class="docs-search-input-row">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="text" class="docs-search-input" id="docsSearchInput" placeholder="Search legal docs" autocomplete="off" spellcheck="false">
+      <button class="docs-search-close" id="docsSearchClose" aria-label="Close search">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="docs-search-results" id="docsSearchResults"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main class="docs-main-wrap">
+  <div class="docs-shell">
+
+    <!-- ============================================================
+         SIDEBAR (desktop)
+         ============================================================ -->
+    <aside class="docs-sidebar" id="docsSidebar">
+      <div class="docs-sidebar-title">Ponsly Docs</div>
+
+      <div class="docs-nav-group">
+        <div class="docs-nav-group-label">Legal</div>
+        <a href="#privacy" class="docs-nav-link" data-target="privacy">Privacy Policy</a>
+        <a href="#terms" class="docs-nav-link" data-target="terms">Terms of Use</a>
+      </div>
+    </aside>
+
+    <!-- ============================================================
+         CONTENT
+         ============================================================ -->
+    <div class="docs-content">
+
+      <!-- Mobile docs menu -->
+      <div class="docs-mobile-bar">
+        <button class="docs-menu-btn" id="docsMenuBtn">
+          <span>Legal Menu</span>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <nav class="docs-mobile-drawer" id="docsMobileDrawer">
+          <div class="docs-nav-group" style="margin-bottom:0;">
+            <div class="docs-nav-group-label">Legal</div>
+            <a href="#privacy" class="docs-nav-link">Privacy Policy</a>
+            <a href="#terms" class="docs-nav-link">Terms of Use</a>
+          </div>
+        </nav>
+      </div>
+
+      <!-- ============================================================
+           01 — OVERVIEW
+           ============================================================ -->
+      <!-- ============================================================
+           01 — PRIVACY POLICY
+           ============================================================ -->
+      <section class="doc-section" id="privacy">
+        <div class="doc-eyebrow">01 — Privacy Policy</div>
+        <h1 class="doc-h1">Privacy Policy</h1>
+        <p class="doc-lede">How Ponsly handles information when you use the app.</p>
+        <p class="doc-p">Ponsly is a Web3 application operating on Arc Mainnet. This Privacy Policy explains what information may be handled when you interact with Ponsly, and how that information may be used.</p>
+
+        <h2 class="doc-h2">1. Information We May Collect</h2>
+        <p class="doc-p">Depending on how you use Ponsly, we may process information such as:</p>
+        <ul class="doc-list">
+          <li><strong>Wallet address</strong> — the public address of the wallet you connect.</li>
+          <li><strong>Blockchain transaction information</strong> — data related to transactions you submit through Ponsly.</li>
+          <li><strong>Information you voluntarily provide</strong> — such as token details you enter when launching.</li>
+          <li><strong>Information related to your use of the website</strong> — such as pages viewed and general interaction with the interface.</li>
+          <li><strong>Technical information</strong> necessary to operate and secure the service.</li>
+        </ul>
+        <p class="doc-p">We do not collect personal information beyond what is described in this Policy or reasonably necessary to operate Ponsly.</p>
+
+        <h2 class="doc-h2">2. Wallet Information</h2>
+        <p class="doc-p">Connecting a wallet to Ponsly may make your wallet's public blockchain address visible to Ponsly. Wallet addresses are public blockchain information, and transactions submitted through your wallet are publicly recorded on-chain regardless of your use of Ponsly.</p>
+
+        <h2 class="doc-h2">3. Social Accounts</h2>
+        <p class="doc-p">Ponsly may offer optional social-account integrations. Where such integrations exist, information from them is processed only if and when you choose to connect or use that integration. Connecting a social account is optional and is not required to use Ponsly's core features.</p>
+
+        <h2 class="doc-h2">4. Blockchain Data</h2>
+        <p class="doc-p">Transactions submitted through Ponsly are recorded on a public blockchain and may be permanently visible to anyone. Ponsly does not control the underlying blockchain and cannot alter, hide, or remove data once it has been recorded on-chain.</p>
+
+        <h2 class="doc-h2">5. How Information Is Used</h2>
+        <p class="doc-p">Information we process may be used to:</p>
+        <ul class="doc-list">
+          <li>Operate Ponsly</li>
+          <li>Provide the features you request</li>
+          <li>Process transactions</li>
+          <li>Maintain the security of the service</li>
+          <li>Prevent abuse and fraudulent activity</li>
+          <li>Improve Ponsly over time</li>
+          <li>Communicate important service information</li>
+        </ul>
+
+        <h2 class="doc-h2">6. Third-Party Services</h2>
+        <p class="doc-p">Ponsly may interact with third-party infrastructure required to operate the application, including blockchain networks, APIs, wallet providers, exchanges, and analytics or infrastructure providers. These third parties operate under their own terms and privacy practices, which we encourage you to review.</p>
+
+        <h2 class="doc-h2">7. Data Security</h2>
+        <p class="doc-p">We use reasonable measures intended to protect information handled by Ponsly. However, no method of transmission, storage, or blockchain interaction can be guaranteed to be completely secure.</p>
+
+        <h2 class="doc-h2">8. Data Retention</h2>
+        <p class="doc-p">How long information is retained depends on the type of information and applicable operational or legal requirements. Blockchain records cannot be deleted or modified by Ponsly once they have been recorded on-chain.</p>
+
+        <h2 class="doc-h2">9. User Rights</h2>
+        <p class="doc-p">You may contact us regarding applicable privacy-related requests. We will respond as appropriate based on the nature of the request and applicable requirements. This Policy does not make jurisdiction-specific legal guarantees.</p>
+
+        <h2 class="doc-h2">10. Changes to This Privacy Policy</h2>
+        <p class="doc-p">We may update this Privacy Policy from time to time. Updates will be published on this page, and continued use of Ponsly after changes take effect constitutes acceptance of the updated Policy.</p>
+
+        <h2 class="doc-h2">11. Contact</h2>
+        <p class="doc-p">Contact information will be provided through Ponsly's official communication channels.</p>
+      </section>
+
+      <!-- ============================================================
+           02 — TERMS OF USE
+           ============================================================ -->
+      <section class="doc-section" id="terms">
+        <div class="doc-eyebrow">02 — Terms of Use</div>
+        <h1 class="doc-h1">Terms of Use</h1>
+        <p class="doc-lede">The terms that apply when you use Ponsly.</p>
+        <p class="doc-p">By accessing or using Ponsly, you agree to these Terms of Use. If you do not agree, you should not use Ponsly.</p>
+
+        <h2 class="doc-h2">1. Acceptance of Terms</h2>
+        <p class="doc-p">By using Ponsly, you agree to comply with these Terms and any applicable rules referenced within them.</p>
+
+        <h2 class="doc-h2">2. Description of the Service</h2>
+        <p class="doc-p">Ponsly provides a Web3 interface for features including token discovery, token launching, interaction with supported blockchain infrastructure, trading-related interfaces, staking, and Fee Back campaigns, along with other features that may be introduced over time. Ponsly is a creator-facing launch interface — it does not operate as an independent exchange and does not operate O1 Exchange.</p>
+
+        <h2 class="doc-h2">3. Wallets and Transactions</h2>
+        <p class="doc-p">You are solely responsible for your wallet, private keys, seed phrases, transaction confirmations, and any assets held in your wallet. Ponsly cannot recover lost private keys or reverse blockchain transactions once submitted.</p>
+
+        <h2 class="doc-h2">4. Token Launches</h2>
+        <p class="doc-p">You are responsible for the information and materials associated with any token you launch through Ponsly. You must not use Ponsly for unlawful, fraudulent, deceptive, or abusive activities of any kind.</p>
+
+        <h2 class="doc-h2">5. Staking</h2>
+        <p class="doc-p">Staking features may involve smart contracts and blockchain transactions. You should understand the risks associated with blockchain assets and smart contracts before participating. Ponsly does not guarantee any rewards, returns, or profits from staking.</p>
+
+        <h2 class="doc-h2">6. Fee Back</h2>
+        <p class="doc-p">Fee Back is a campaign/reward feature subject to its applicable rules and availability. Under the current campaign mechanics:</p>
+        <ul class="doc-list">
+          <li>2 USDC per eligible wallet</li>
+          <li>100 FCFS rewards per day</li>
+          <li>1 wallet = 1 reward</li>
+          <li>Daily reset at 00:00 UTC</li>
+        </ul>
+        <p class="doc-p">Eligibility is subject to the applicable Ponsly campaign requirements. Connecting a social account such as X is not a mandatory requirement under these Terms.</p>
+
+        <h2 class="doc-h2">7. Risks</h2>
+        <p class="doc-p">Using Ponsly involves inherent risks, including but not limited to:</p>
+        <ul class="doc-list">
+          <li>Smart contract risk</li>
+          <li>Blockchain network risk</li>
+          <li>Market and token price volatility</li>
+          <li>Liquidity risk</li>
+          <li>Transaction failure or network congestion</li>
+          <li>Third-party infrastructure risk</li>
+          <li>Regulatory or legal uncertainty</li>
+        </ul>
+        <p class="doc-p">Ponsly does not guarantee that you will make a profit from using the service.</p>
+
+        <h2 class="doc-h2">8. Prohibited Use</h2>
+        <p class="doc-p">You must not use Ponsly for fraud, illegal activities, exploitation of vulnerabilities, unauthorized access, abuse of the service, malicious activity, or any activity that violates applicable laws.</p>
+
+        <h2 class="doc-h2">9. Third-Party Services</h2>
+        <p class="doc-p">Ponsly may integrate with third-party services and infrastructure required to operate the application. Ponsly is not responsible for the independent operation of these third-party services and does not claim ownership or control over any third-party platform.</p>
+
+        <h2 class="doc-h2">10. No Financial Advice</h2>
+        <p class="doc-p">Ponsly does not provide financial, investment, legal, or tax advice. You are responsible for your own decisions when using Ponsly and should obtain professional advice where appropriate.</p>
+
+        <h2 class="doc-h2">11. Disclaimers</h2>
+        <p class="doc-p">Ponsly is provided on an "as available" basis. Blockchain interactions involve inherent risks that are outside of Ponsly's control, and no warranty is made regarding uninterrupted or error-free operation of the service.</p>
+
+        <h2 class="doc-h2">12. Limitation of Liability</h2>
+        <p class="doc-p">To the fullest extent permitted, Ponsly and its contributors shall not be liable for indirect, incidental, or consequential damages arising from your use of the service. This section does not reference a specific jurisdiction, company registration, legal entity, or governing law, as these are not defined elsewhere for Ponsly.</p>
+
+        <h2 class="doc-h2">13. Changes to the Terms</h2>
+        <p class="doc-p">We may update these Terms from time to time. Updates will be published on this page, and continued use of Ponsly after changes take effect constitutes acceptance of the updated Terms.</p>
+
+        <h2 class="doc-h2">14. Contact</h2>
+        <p class="doc-p">Contact information will be provided through Ponsly's official communication channels.</p>
+      </section>
+
+
+
+    </div>
+  </div>
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-card">
+      <div class="footer-brand-col">
+        <div class="footer-brand">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L20 8V16L12 21L4 16V8L12 3Z" stroke="#050708" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>Ponsly</span>
+        </div>
+        <p class="footer-desc">Launch and explore tokens on Arc. Your wallet submits every transaction. Ponsly does not custody assets.</p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="index.html">Explore</a>
+          <a href="launch.html">Launch</a>
+          <a href="#">Featured</a>
+          <a href="#">Profile</a>
+          <a href="docs.html">Docs</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="legal.html#privacy">Privacy Policy</a>
+          <a href="legal.html#terms">Terms of Use</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Risk notice</div>
+        <p class="footer-risk-text">Transactions are submitted through your wallet and may be irreversible. Tokens can be volatile or lose all value. Ponsly does not provide custody, guarantees, or financial advice.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2026 Ponsly Labs, LLC.</span>
+      <div class="footer-social">
+        <a href="#">@ponslyxyz</a>
+        <span class="footer-x">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-6.9l-5.4-7-6.2 7H1.8l8-9.2L1 2h7.1l4.9 6.4L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg>
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ----------------------------------------------------------
+  // Theme toggle (light / dark)
+  // ----------------------------------------------------------
+  (function () {
+    const root = document.documentElement;
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const STORAGE_KEY = 'ponsly-docs-theme';
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+    }
+
+    let stored = null;
+    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const initial = stored || (prefersLight ? 'light' : 'dark');
+    applyTheme(initial);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const isLight = root.getAttribute('data-theme') === 'light';
+      const next = isLight ? 'dark' : 'light';
+      applyTheme(next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+    });
+  })();
+
+  // ----------------------------------------------------------
+  // Docs mobile drawer toggle
+  // ----------------------------------------------------------
+  const docsMenuBtn = document.getElementById('docsMenuBtn');
+  const docsMobileDrawer = document.getElementById('docsMobileDrawer');
+  docsMenuBtn.addEventListener('click', () => {
+    docsMenuBtn.classList.toggle('open');
+    docsMobileDrawer.classList.toggle('open');
+  });
+  docsMobileDrawer.querySelectorAll('.docs-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      docsMenuBtn.classList.remove('open');
+      docsMobileDrawer.classList.remove('open');
+    });
+  });
+
+  // ----------------------------------------------------------
+  // Active section highlighting (sidebar)
+  // ----------------------------------------------------------
+  const sections = document.querySelectorAll('.doc-section');
+  const sidebarLinks = document.querySelectorAll('.docs-sidebar .docs-nav-link');
+
+  const setActive = (id) => {
+    sidebarLinks.forEach(link => {
+      link.classList.toggle('active', link.dataset.target === id);
+    });
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setActive(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(section => observer.observe(section));
+
+  // ----------------------------------------------------------
+  // Docs search modal
+  // ----------------------------------------------------------
+  const docsSearchData = [
+    { title: 'Privacy Policy', group: 'Legal', desc: 'What information Ponsly may handle, wallet data, blockchain data, and how it is used.', target: 'privacy' },
+    { title: 'Terms of Use', group: 'Legal', desc: 'The terms that apply when using Ponsly, including risks, staking, and Fee Back.', target: 'terms' },
+  ];
+
+  const docsSearchBtn = document.getElementById('docsSearchBtn');
+  const docsSearchOverlay = document.getElementById('docsSearchOverlay');
+  const docsSearchModal = document.getElementById('docsSearchModal');
+  const docsSearchInput = document.getElementById('docsSearchInput');
+  const docsSearchClose = document.getElementById('docsSearchClose');
+  const docsSearchResults = document.getElementById('docsSearchResults');
+
+  let docsSearchActiveIndex = 0;
+  let docsSearchCurrentItems = [];
+
+  function renderDocsSearchResults(query) {
+    const q = query.trim().toLowerCase();
+    const items = q
+      ? docsSearchData.filter(item =>
+          item.title.toLowerCase().includes(q) ||
+          item.desc.toLowerCase().includes(q) ||
+          item.group.toLowerCase().includes(q)
+        )
+      : docsSearchData;
+
+    docsSearchCurrentItems = items;
+    docsSearchActiveIndex = 0;
+    docsSearchResults.innerHTML = '';
+
+    if (items.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'docs-search-empty';
+      empty.textContent = 'No results found.';
+      docsSearchResults.appendChild(empty);
+      return;
+    }
+
+    items.forEach((item, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'docs-search-result' + (i === docsSearchActiveIndex ? ' active' : '');
+      btn.dataset.index = i;
+      btn.innerHTML =
+        '<div class="docs-search-result-body">' +
+          '<div class="docs-search-result-title">' + item.title + '</div>' +
+          '<div class="docs-search-result-desc"><span class="grp">' + item.group + '</span> · ' + item.desc + '</div>' +
+        '</div>' +
+        '<svg class="docs-search-result-chevron" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.addEventListener('mouseenter', () => setDocsSearchActive(i));
+      btn.addEventListener('click', () => goToDocsSearchResult(i));
+      docsSearchResults.appendChild(btn);
+    });
+  }
+
+  function setDocsSearchActive(i) {
+    docsSearchActiveIndex = i;
+    docsSearchResults.querySelectorAll('.docs-search-result').forEach((el, idx) => {
+      el.classList.toggle('active', idx === i);
+    });
+    const activeEl = docsSearchResults.children[i];
+    if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+  }
+
+  function goToDocsSearchResult(i) {
+    const item = docsSearchCurrentItems[i];
+    if (!item) return;
+    closeDocsSearch();
+    const target = document.getElementById(item.target);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState(null, '', '#' + item.target);
+  }
+
+  function openDocsSearch() {
+    docsSearchOverlay.classList.add('open');
+    docsSearchInput.value = '';
+    renderDocsSearchResults('');
+    setTimeout(() => docsSearchInput.focus(), 0);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDocsSearch() {
+    docsSearchOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  docsSearchBtn.addEventListener('click', openDocsSearch);
+  docsSearchClose.addEventListener('click', closeDocsSearch);
+
+  docsSearchOverlay.addEventListener('click', (e) => {
+    if (e.target === docsSearchOverlay) closeDocsSearch();
+  });
+
+  docsSearchInput.addEventListener('input', (e) => renderDocsSearchResults(e.target.value));
+
+  document.addEventListener('keydown', (e) => {
+    const isK = e.key === 'k' || e.key === 'K';
+    if ((e.metaKey || e.ctrlKey) && isK) {
+      e.preventDefault();
+      docsSearchOverlay.classList.contains('open') ? closeDocsSearch() : openDocsSearch();
+      return;
+    }
+    if (!docsSearchOverlay.classList.contains('open')) return;
+
+    if (e.key === 'Escape') {
+      closeDocsSearch();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (docsSearchCurrentItems.length) {
+        setDocsSearchActive((docsSearchActiveIndex + 1) % docsSearchCurrentItems.length);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (docsSearchCurrentItems.length) {
+        setDocsSearchActive((docsSearchActiveIndex - 1 + docsSearchCurrentItems.length) % docsSearchCurrentItems.length);
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      goToDocsSearchResult(docsSearchActiveIndex);
+    }
+  });
+</script>
+
+</body>
+</html>
